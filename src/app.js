@@ -114,8 +114,31 @@ function handleSubmit(event) {
   search(cityInputElement.value);
 }
 
-let form = document.querySelector("#search-form");
-form.addEventListener("submit", handleSubmit);
+let searchForm = document.querySelector("#search-form");
+searchForm.addEventListener("submit", handleSubmit);
+
+function getLocation(position) {
+  let latitude = position.coords.latitude;
+  let longitude = position.coords.longitude;
+  let apiKey = "ac209dae1f283fb332a5bb7f50b0f468";
+  let apiUrl = `https://api.openweathermap.org/data/2.5/weather?&q=${city}&lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`;
+  axios.get(apiUrl).then(displayTemperature);
+}
+function showCurrentLocation(position) {
+  let latitude = position.coords.latitude;
+  let longitude = position.coords.longitude;
+  let apiKey = "ac209dae1f283fb332a5bb7f50b0f468";
+  let apiUrl = `https://api.openweathermap.org/data/2.5/weather?&q&lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`;
+  axios.get(apiUrl).then(displayTemperature);
+}
+
+function getCurrentLocation(event) {
+  event.preventDefault();
+  navigator.geolocation.getCurrentPosition(showCurrentLocation);
+}
+
+let currentLocationButton = document.querySelector("#current-location-button");
+currentLocationButton.addEventListener("click", getCurrentLocation);
 
 let temperature = document.querySelector("#main-deg");
 
@@ -136,14 +159,3 @@ let celLink = document.querySelector("#unit-celsius");
 celLink.addEventListener("click", toCelsius);
 
 search("London");
-
-function showCurrentPosition(position) {
-  let currentCity = document.querySelector("#current-city-name");
-  currentCity.innerHTML = response.data.name;
-}
-function getCurrentPosition() {
-  navigator.geolocation.getCurrentPosition(showCurrentPosition);
-}
-
-let currentPosButton = document.querySelector("#current-location-button");
-currentPosButton.addEventListener("click", getCurrentPosition);
